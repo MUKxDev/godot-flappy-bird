@@ -1,18 +1,15 @@
-[gd_scene load_steps=6 format=3 uid="uid://dbbr5g10qjmy3"]
+[gd_scene load_steps=7 format=3 uid="uid://dbbr5g10qjmy3"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_26bag"]
 [ext_resource type="Texture2D" uid="uid://dta10c25aub77" path="res://assets/Background5.png" id="1_fj7kq"]
+[ext_resource type="PackedScene" uid="uid://cer450q3g1vmf" path="res://scense/pipe.tscn" id="2_88u3m"]
 [ext_resource type="PackedScene" uid="uid://b2x5yqm3stnq4" path="res://scense/ground.tscn" id="2_a2l1n"]
 [ext_resource type="PackedScene" uid="uid://dge2tcs2mk3hf" path="res://scense/Bird.tscn" id="4_ybxcx"]
-
-[sub_resource type="GDScript" id="GDScript_i6xoj"]
-script/source = "extends Area2D
-
-
-signal hit"
+[ext_resource type="PackedScene" uid="uid://u0ipb45elape" path="res://scense/game_over.tscn" id="6_0lamh"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_26bag")
+pipe_scene = ExtResource("2_88u3m")
 
 [node name="Background" type="Sprite2D" parent="."]
 position = Vector2(128, 128)
@@ -22,5 +19,26 @@ texture = ExtResource("1_fj7kq")
 position = Vector2(40, 160)
 
 [node name="Ground" parent="." instance=ExtResource("2_a2l1n")]
+z_index = 1
 position = Vector2(0, 256)
-script = SubResource("GDScript_i6xoj")
+
+[node name="PipeTimer" type="Timer" parent="."]
+wait_time = 1.5
+
+[node name="ScoreLabel" type="Label" parent="."]
+z_index = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -34.5
+offset_right = 34.5
+offset_bottom = 26.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+text = "SCORE: 0"
+
+[node name="GameOver" parent="." instance=ExtResource("6_0lamh")]
+
+[connection signal="hit" from="Ground" to="." method="_on_ground_hit"]
+[connection signal="timeout" from="PipeTimer" to="." method="_on_pipe_timer_timeout"]
+[connection signal="restart" from="GameOver" to="." method="_on_game_over_restart"]
